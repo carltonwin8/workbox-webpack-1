@@ -11,6 +11,20 @@ function init() {
   let list = document.createElement("ol");
   document.body.appendChild(list);
   fetchTop10().then(stories => renderTop10(stories));
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then(registration => {
+          console.log("SW registered: ", registration);
+          registration.pushManager.subscribe({ userVisibleOnly: true });
+        })
+        .catch(registrationError => {
+          console.log("SW registration failed: ", registrationError);
+        });
+    });
+  }
 }
 
 function fetchTop10() {
